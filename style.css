@@ -150,7 +150,7 @@ body { background: var(--bg-black); color: #fff; font-family: var(--font-body); 
 .t-seg.past { background: #111; opacity: 0.3; }
 
 /* MODALS */
-.system-overlay { display: none; position: fixed; inset: 0; z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+.system-overlay { display: none; position: fixed; inset: 0; z-index: 6000; align-items: center; justify-content: center; padding: 20px; }
 .overlay-blur-shield { position: absolute; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(12px); }
 .glass-morph-panel { position: relative; width: 100%; max-width: 500px; background: #08080a; border: 1px solid var(--neon-cyan); padding: 25px; border-radius: 16px; box-shadow: 0 0 40px rgba(0,242,255,0.1); }
 .glass-morph-panel.admin-mode { border-color: var(--neon-gold); box-shadow: 0 0 50px rgba(255, 204, 0, 0.2); }
