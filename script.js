@@ -1,6 +1,4 @@
-/* --- INFINITY TITAN // CLOUD CORE --- */
 
-// --- FIREBASE CONFIGURATION ---
 const firebaseConfig = {
     apiKey: "AIzaSyAJt51st7wQbFL9Icp13dANmIfy26aUMQ0",
     authDomain: "infinity-cafe-d56e6.firebaseapp.com",
@@ -33,7 +31,6 @@ for (let h = 14; h <= 23; h++) {
     if (h !== 24) TIMES.push(`${hourStr}:30 ${ampm}`);
 }
 
-// DATA STATE
 let pcs = Array.from({length: 10}, (_, i) => ({ id: i + 1, slots: [] }));
 let pendingRequests = [];
 let totalRevenue = 0;
@@ -43,7 +40,6 @@ let isLocked = false;
 let selectionState = { primaryPc: null, squadIds: [], start: null, end: null, mode: 'USER' };
 let adminSquadIds = [];
 
-// PHASE 3: BOOT & SYNC
 window.addEventListener('load', () => {
     db.ref('/').on('value', (snapshot) => {
         const data = snapshot.val();
@@ -75,7 +71,7 @@ function updateCloud() {
     });
 }
 
-// HELPERS
+
 function parseTime(timeStr) {
     if (timeStr.includes('M')) {
         const [t, modifier] = timeStr.split(' ');
@@ -94,7 +90,6 @@ function minsToTime(m) {
 }
 function minsToInputVal(m) { const h = Math.floor(m / 60); const min = m % 60; return `${h < 10 ? '0'+h : h}:${min < 10 ? '0'+min : min}`; }
 
-// RENDERER
 function render() {
     const r1 = document.getElementById('row1'); const r2 = document.getElementById('row2'); 
     r1.innerHTML = ''; r2.innerHTML = '';
@@ -151,7 +146,6 @@ function generateTimelineVisual(slots) {
     return html;
 }
 
-// --- BOOKING LOGIC ---
 function openBooking(id, mode) {
     if (mode === 'ADMIN') {
         const key = prompt("ENTER FLASH KEY:");
@@ -198,7 +192,6 @@ function sendRequestToCloud() {
     const name = prompt("YOUR NAME:");
     if(!name || !selectionState.start || !selectionState.end) return alert("DATA MISSING");
 
-    // 🟢 WHATSAPP TRIGGERED FIRST TO BYPASS POPUP BLOCKER 🟢
     const msg = `🚀 NEW REQUEST: ${name} wants ${selectionState.squadIds.length} PCs | ${selectionState.start} to ${selectionState.end}`;
     window.open(`https://wa.me/91${MY_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
 
