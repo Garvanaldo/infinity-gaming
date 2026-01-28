@@ -224,6 +224,11 @@ function sendRequestToCloud() {
 
     pendingRequests.push(newReq);
     updateCloud(); 
+    const msg = `🚀 NEW REQUEST: ${name} wants ${selectionState.squadIds.length} PCs | ${selectionState.start} to ${selectionState.end}`;
+    
+    // Use the MY_NUMBER variable you defined at the top of the file
+    // Adding "91" for India Country Code
+    window.open(`https://wa.me/91${MY_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
     
     alert("REQUEST SENT! WAIT FOR ADMIN APPROVAL.");
     closeUserModal();
