@@ -74,44 +74,23 @@
     </header>
 
     <main class="deployment-floor">
+    <div class="split-layout-wrapper">
         <section class="station-zone">
             <div class="zone-descriptor">
-                <div class="d-line"></div>
-                <div class="d-content"><span class="d-main">ZONE ALPHA</span></div>
-                <div class="d-line"></div>
+                <div class="d-main">ZONE ALPHA</div>
             </div>
-            <div class="station-grid" id="row1"></div>
+            <div class="station-grid vertical-col" id="row1"></div>
         </section>
         
         <section class="station-zone">
             <div class="zone-descriptor">
-                <div class="d-line"></div>
-                <div class="d-content"><span class="d-main">ZONE BRAVO</span></div>
-                <div class="d-line"></div>
+                <div class="d-main" style="text-align:right; color:var(--neon-danger)">ZONE BRAVO</div>
             </div>
-            <div class="station-grid snake-config" id="row2"></div>
+            <div class="station-grid vertical-col reverse-flow" id="row2"></div>
         </section>
-    </main>
-
-    <div id="userBookingModal" class="system-overlay">
-        <div class="overlay-blur-shield" onclick="closeUserModal()"></div>
-        <div class="overlay-window glass-morph-panel" id="bookingPanel">
-            <div class="ph-title">
-                <h3 id="bookingTitle">SQUAD DEPLOYMENT</h3>
-                <p id="targetPcDisplay">LEADER: PC --</p>
-            </div>
-            <div class="panel-body">
-                <label class="section-label">1. ADD TEAMMATES</label>
-                <div id="squadGrid" class="squad-grid"></div>
-
-                <label class="section-label">2. SELECT TIME (STARTS 02:00 PM)</label>
-                <div id="slotGrid" class="time-slot-grid"></div>
-
-                <button id="actionBtn" class="protocol-execute-btn" onclick="executeBookingAction()">INITIALIZE REQUEST</button>
-            </div>
-        </div>
     </div>
-
+    </main>
+    
     <div id="scheduleModal" class="system-overlay">
         <div class="overlay-blur-shield" onclick="closeSchedule()"></div>
         <div class="overlay-window glass-morph-panel" style="border-color: var(--neon-gold);">
