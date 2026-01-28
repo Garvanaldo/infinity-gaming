@@ -1,10 +1,9 @@
 /* --- INFINITY TITAN // CLOUD CORE --- */
 
-// --- FIREBASE CONFIGURATION (YOUR KEYS ARE HERE) ---
+// --- FIREBASE CONFIGURATION ---
 const firebaseConfig = {
     apiKey: "AIzaSyAJt51st7wQbFL9Icp13dANmIfy26aUMQ0",
     authDomain: "infinity-cafe-d56e6.firebaseapp.com",
-    // I have set this to the Singapore Database URL based on your region
     databaseURL: "https://infinity-cafe-d56e6-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "infinity-cafe-d56e6",
     storageBucket: "infinity-cafe-d56e6.firebasestorage.app",
@@ -13,8 +12,6 @@ const firebaseConfig = {
     measurementId: "G-XK6TE427RL"
 };
 
-// INITIALIZE SATELLITE
-// Check if Firebase is already initialized to prevent errors
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 } else {
@@ -36,23 +33,20 @@ for (let h = 14; h <= 23; h++) {
     if (h !== 24) TIMES.push(`${hourStr}:30 ${ampm}`);
 }
 
-// DATA STATE (Live synced with Cloud)
+// DATA STATE
 let pcs = Array.from({length: 10}, (_, i) => ({ id: i + 1, slots: [] }));
 let pendingRequests = [];
 let totalRevenue = 0;
 let announcement = "";
 let isLocked = false;
 
-// Selection State
 let selectionState = { primaryPc: null, squadIds: [], start: null, end: null, mode: 'USER' };
 let adminSquadIds = [];
 
 // PHASE 3: BOOT & SYNC
 window.addEventListener('load', () => {
-    // 1. LISTEN TO CLOUD DATA
     db.ref('/').on('value', (snapshot) => {
         const data = snapshot.val();
-        
         if (data) {
             pcs = data.pcs || Array.from({length: 10}, (_, i) => ({ id: i + 1, slots: [] }));
             pendingRequests = data.pendingRequests || [];
@@ -60,22 +54,17 @@ window.addEventListener('load', () => {
             announcement = data.announcement || "";
             isLocked = data.isLocked || false;
         }
-
-        // 2. UPDATE UI
         checkLockdown();
         checkAnnouncement();
         render();
         if(document.getElementById('adminSection').style.display === 'flex') {
             renderAdmin();
         }
-        
-        // Hide Loader
         document.getElementById('loader').style.display = 'none';
         document.body.classList.remove('loading');
     });
 });
 
-// CLOUD SAVE FUNCTION
 function updateCloud() {
     db.ref('/').update({
         pcs: pcs,
@@ -113,7 +102,6 @@ function render() {
 
     pcs.forEach(pc => {
         if (!pc.slots) pc.slots = [];
-        
         const currentSlot = getCurrentSlot(pc.slots);
         const busy = !!currentSlot;
         if (busy) active++;
@@ -209,6 +197,11 @@ function confirmWalkIn() {
 function sendRequestToCloud() {
     const name = prompt("YOUR NAME:");
     if(!name || !selectionState.start || !selectionState.end) return alert("DATA MISSING");
+
+    // 🟢 WHATSAPP TRIGGERED FIRST TO BYPASS POPUP BLOCKER 🟢
+    const msg = `🚀 NEW REQUEST: ${name} wants ${selectionState.squadIds.length} PCs | ${selectionState.start} to ${selectionState.end}`;
+    window.open(`https://wa.me/91${MY_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+
     const startMins = parseTime(selectionState.start);
     const endMins = parseTime(selectionState.end);
     const duration = endMins - startMins;
@@ -224,18 +217,12 @@ function sendRequestToCloud() {
 
     pendingRequests.push(newReq);
     updateCloud(); 
-    const msg = `🚀 NEW REQUEST: ${name} wants ${selectionState.squadIds.length} PCs | ${selectionState.start} to ${selectionState.end}`;
     
-    // Use the MY_NUMBER variable you defined at the top of the file
-    // Adding "91" for India Country Code
-    window.open(`https://wa.me/91${MY_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-    
-    alert("REQUEST SENT! WAIT FOR ADMIN APPROVAL.");
+    alert("REQUEST SENT! CHECK WHATSAPP.");
     closeUserModal();
 }
 
 // --- ADMIN FEATURES ---
-
 function setAnnouncement() {
     const text = document.getElementById('announceInput').value;
     if(!text) return;
@@ -271,13 +258,10 @@ function adminManualBook() {
     const endStr = document.getElementById('manEnd').value;
     
     if (!name || adminSquadIds.length === 0 || !startStr || !endStr) return alert("FILL ALL FIELDS");
-
     const startMins = parseTime(startStr);
     const endMins = parseTime(endStr);
-    
     if (endMins <= startMins) return alert("CHECK TIMES");
 
-    // Check collisions
     const collision = adminSquadIds.some(pcId => {
         if(!pcs[pcId-1].slots) pcs[pcId-1].slots = [];
         return pcs[pcId - 1].slots.some(s => {
@@ -289,7 +273,6 @@ function adminManualBook() {
 
     if (collision) return alert("ONE OR MORE PCS ARE BOOKED");
 
-    // Book
     adminSquadIds.forEach(id => {
         if(!pcs[id-1].slots) pcs[id-1].slots = [];
         pcs[id - 1].slots.push({
@@ -301,7 +284,7 @@ function adminManualBook() {
 
     totalRevenue += ((endMins - startMins) / 60) * HOURLY_RATE * adminSquadIds.length;
     updateCloud();
-    adminSquadIds = []; // Reset selection
+    adminSquadIds = []; 
     renderAdminSquadSelector();
     alert("DEPLOYED");
 }
@@ -319,7 +302,6 @@ function toggleAdminSquadMember(id) {
     renderAdminSquadSelector();
 }
 
-// DELETE & EDIT
 function deleteSlot(pcId, slotIndex) {
     if(confirm("DELETE BOOKING?")) {
         pcs[pcId - 1].slots.splice(slotIndex, 1);
@@ -339,7 +321,6 @@ function editSlot(pcId, slotIndex) {
     alert("SLOT REMOVED. EDIT & DEPLOY TO SAVE.");
 }
 
-// ADMIN RENDER
 function renderAdmin() {
     renderAdminSquadSelector();
     const pendingDiv = document.getElementById('adminControls');
@@ -377,7 +358,6 @@ function renderAdmin() {
     activeDiv.innerHTML = activeHtml;
 }
 
-// UTILS
 function approveRequest(reqId) {
     const idx = pendingRequests.findIndex(r => r.id === reqId);
     if(idx === -1) return;
@@ -411,7 +391,6 @@ function closeUserModal() { document.getElementById('userBookingModal').style.di
 function closeAdmin() { document.getElementById('adminSection').style.display = 'none'; }
 function closeSchedule() { document.getElementById('scheduleModal').style.display = 'none'; }
 
-// SQUAD & TIME UTILS (Same as before, updated to use pcs correctly)
 function renderSquadSelector(leaderId) {
     const grid = document.getElementById('squadGrid');
     const available = pcs.filter(p => p.id !== leaderId && !getCurrentSlot(p.slots));
@@ -454,13 +433,6 @@ function handleTimeClick(time) {
         selectionState.end = time; btn.style.background = "var(--neon-danger)"; btn.style.color = "#fff"; highlightRange(sMins, eMins, activeColor);
     } else { selectionState.start = time; selectionState.end = null; renderTimeGrid(); const newBtn = document.getElementById(btnId); if(newBtn) { newBtn.style.background = activeColor; newBtn.style.color = "#000"; } }
 }
-function isRangeBlocked(pcId, startMins, endMins) {
-    if(!pcs[pcId-1].slots) return false;
-    return pcs[pcId-1].slots.some(s => {
-        const sStart = parseTime(s.startRaw); const sEnd = sStart + s.duration;
-        return (startMins < sEnd && endMins > sStart);
-    });
-}
 function highlightRange(start, end, color) {
     TIMES.forEach(t => {
         const tMins = parseTime(t);
@@ -475,4 +447,15 @@ function openSchedule(id) {
     document.getElementById('scheduleModal').style.display = 'flex';
 }
 
-setInterval(() => { render(); document.getElementById('liveClock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); }, 60000);
+/* --- TIME SYNC FIX --- */
+function tick() {
+    render(); 
+    document.getElementById('liveClock').innerText = new Date().toLocaleTimeString([], {
+        hour: '2-digit', 
+        minute:'2-digit'
+    });
+}
+
+// RUN IMMEDIATELY & THEN EVERY MINUTE
+tick();
+setInterval(tick, 60000);

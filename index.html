@@ -2,168 +2,163 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>INFINITY | TITAN CLOUD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFINITY | MUMBAI ELITE GAMING</title>
     <link rel="stylesheet" href="style.css">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syncopate:wght@700&family=Inter:wght@300;900&display=swap" rel="stylesheet">
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Orbitron:wght@400;700;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 </head>
 <body class="loading">
 
-    <div id="loader" class="preloader">
-        <div class="loader-content">
-            <div class="glitch-wrapper">
-                <div class="glitch-text" data-text="INFINITY">INFINITY</div>
-            </div>
-            <div class="load-track"><div class="load-fill" id="loadFill"></div></div>
-            <div class="load-status-group">
-                <span class="load-status">CONNECTING TO SATELLITE...</span>
-                <span class="load-percent" id="loadPercent">0%</span>
-            </div>
+    <div class="preloader" id="loader">
+        <div class="glitch-text">INFINITY</div>
+        <div class="load-track"><div class="load-fill" id="loadFill"></div></div>
+        <div class="load-status-group">
+            <span>SYNCING CORES...</span>
+            <span id="loadPerc">0%</span>
         </div>
     </div>
 
-    <div id="lockdownScreen" class="lockdown-overlay">
+    <div class="lockdown-overlay" id="lockdownScreen">
         <div class="lockdown-content">
             <h1>SYSTEM LOCKED</h1>
-            <p>CAFE CURRENTLY CLOSED</p>
-            <button onclick="toggleAdmin()" class="admin-override-btn">ADMIN OVERRIDE</button>
+            <p>MAINTENANCE IN PROGRESS</p>
+            <button class="admin-override-btn" onclick="toggleAdmin()">ADMIN OVERRIDE</button>
+        </div>
+    </div>
+
+    <div class="news-ticker-container" id="newsTickerBar" style="display:none;">
+        <div class="ticker-wrap">
+            <div class="ticker-item" id="tickerText">LAUNCHED BY GARVA</div>
         </div>
     </div>
 
     <div class="bg-wrapper">
         <div class="perspective-grid"></div>
-        <div class="scanlines"></div>
         <div class="ambient-glow"></div>
+        <div class="scanlines"></div>
     </div>
 
     <header class="primary-hud-header">
-        <nav class="hud-navigation">
-            <div class="nav-segment-left"></div>
-            <div class="nav-segment-center">
-                <div class="branding-core">
-                    <h1 class="brand-title">INFINITY</h1>
-                    <p class="brand-tagline">MUMBAI ELITE GAMING</p>
-                    <div class="brand-bottom-dec">OPENS 02:00 PM</div>
-                </div>
+        <div class="hud-navigation">
+            <div class="brand-block">
+                <h1 class="brand-title">INFINITY</h1>
+                <div class="brand-tagline">MUMBAI ELITE GAMING</div>
+                <div class="brand-bottom-dec">OPENS 02:00 PM</div>
             </div>
-            <div class="nav-segment-right">
-                <div class="utility-cockpit">
-                    <span id="liveClock" class="c-val">00:00 PM</span>
-                    <button class="admin-hud-btn" onclick="toggleAdmin()">OWNER HUD</button>
-                </div>
-            </div>
-        </nav>
-        
-        <div id="newsTickerBar" class="news-ticker-container" style="display:none;">
-            <div class="ticker-wrap">
-                <div class="ticker-item" id="tickerText"></div>
+            <div class="utility-cockpit">
+                <span class="c-val" id="liveClock">00:00 PM</span>
+                <button class="admin-hud-btn" onclick="toggleAdmin()">OWNER HUD</button>
             </div>
         </div>
-        
-        <section class="operational-banners">
-            <div class="banner-node node-cyan"><span class="n-label">RATE</span><span class="n-val">₹60</span></div>
-            <div class="banner-node node-gold"><span class="n-label">SQUAD</span><span class="n-val">ACTIVE</span></div>
-            <div class="banner-node node-red"><span class="n-label">SYNC</span><span class="n-val" style="color:#0f0">ONLINE</span></div>
-        </section>
+
+        <div class="operational-banners">
+            <div class="banner-node node-cyan">
+                <span class="n-label">RATE</span>
+                <span class="n-val">₹60</span>
+            </div>
+            <div class="banner-node node-gold">
+                <span class="n-label">SQUAD</span>
+                <span class="n-val">ACTIVE</span>
+            </div>
+            <div class="banner-node node-red">
+                <span class="n-label">SYNC</span>
+                <span class="n-val" style="color:var(--neon-cyan)">ONLINE</span>
+            </div>
+        </div>
     </header>
 
     <main class="deployment-floor">
-    <div class="split-layout-wrapper">
-        <section class="station-zone">
-            <div class="zone-descriptor">
-                <div class="d-main">ZONE ALPHA</div>
-            </div>
-            <div class="station-grid vertical-col" id="row1"></div>
-        </section>
-        
-        <section class="station-zone">
-            <div class="zone-descriptor">
-                <div class="d-main" style="text-align:right; color:var(--neon-danger)">ZONE BRAVO</div>
-            </div>
-            <div class="station-grid vertical-col reverse-flow" id="row2"></div>
-        </section>
-    </div>
+        <div class="split-layout-wrapper">
+            <section class="station-zone">
+                <div class="zone-descriptor">
+                    <div class="d-main" style="color:var(--neon-cyan)">ZONE BRAVO</div>
+                </div>
+                <div class="vertical-col reverse-flow" id="row2"></div>
+            </section>
+
+            <section class="station-zone">
+                <div class="zone-descriptor">
+                    <div class="d-main">ZONE ALPHA</div>
+                </div>
+                <div class="vertical-col" id="row1"></div>
+            </section>
+        </div>
     </main>
-    
-    <div id="scheduleModal" class="system-overlay">
-        <div class="overlay-blur-shield" onclick="closeSchedule()"></div>
-        <div class="overlay-window glass-morph-panel" style="border-color: var(--neon-gold);">
+
+    <div class="system-overlay" id="userBookingModal">
+        <div class="overlay-blur-shield" onclick="closeUserModal()"></div>
+        <div class="glass-morph-panel" id="bookingPanel">
             <div class="ph-title">
-                <h3>TIMELINE LOG</h3>
-                <p id="scheduleTitle" style="color:var(--neon-gold)">PC -- ACTIVITY</p>
+                <h3 id="bookingTitle">SQUAD DEPLOYMENT</h3>
+                <p id="targetPcDisplay">LEADER: PC --</p>
             </div>
-            <div class="panel-body">
-                <div id="scheduleList" class="schedule-list-container"></div>
-                <button class="exit-btn" onclick="closeSchedule()">CLOSE TIMELINE</button>
-            </div>
+
+            <span class="section-label">RECRUIT SQUAD (OPTIONAL)</span>
+            <div class="squad-grid" id="squadGrid"></div>
+
+            <span class="section-label">SELECT TIME WINDOW</span>
+            <div class="selection-hint">CLICK START TIME THEN END TIME</div>
+            <div class="time-slot-grid" id="slotGrid"></div>
+
+            <button class="protocol-execute-btn" id="actionBtn" onclick="executeBookingAction()">INITIALIZE REQUEST</button>
         </div>
     </div>
 
-    <div id="adminSection" class="system-overlay">
+    <div class="system-overlay" id="scheduleModal">
+        <div class="overlay-blur-shield" onclick="closeSchedule()"></div>
+        <div class="glass-morph-panel">
+            <div class="ph-title">
+                <h3 id="scheduleTitle">PC SCHEDULE</h3>
+                <p>ALL REGISTERED SESSIONS</p>
+            </div>
+            <div class="schedule-list-container" id="scheduleList"></div>
+            <button class="protocol-execute-btn" onclick="closeSchedule()" style="background:#222; color:#888;">CLOSE LOG</button>
+        </div>
+    </div>
+
+    <div class="system-overlay" id="adminSection">
         <div class="overlay-blur-shield" onclick="closeAdmin()"></div>
-        <div class="overlay-window admin-console-panel glass-morph-panel" style="max-width: 600px; max-height:90vh; overflow-y:auto;">
-            
+        <div class="glass-morph-panel admin-mode">
+            <div class="ph-title">
+                <h3>COMMAND CENTER</h3>
+                <p>ADMINISTRATIVE OVERRIDE ACTIVE</p>
+            </div>
+
             <div class="console-top-telemetry">
-                <div class="telemetry-node">
-                    <label>REVENUE</label>
-                    <h1 id="revenueVal">₹0</h1>
-                </div>
-                <div class="capacity-telemetry">
-                    <div>ACTIVE: <span id="activeCount">0</span></div>
-                </div>
+                <div class="telemetry-node"><label>TOTAL REVENUE</label><h1 id="revenueVal">₹0</h1></div>
+                <div class="telemetry-node"><label>ACTIVE PCs</label><h1 id="activeCount">0</h1></div>
             </div>
 
-            <div class="console-action-strip">
-                <div class="strip-label">BROADCAST SYSTEM</div>
-            </div>
-            <div style="padding:10px; background:rgba(255,255,255,0.02); margin-bottom:20px;">
-                <input type="text" id="announceInput" placeholder="TYPE ANNOUNCEMENT..." class="titan-input" style="margin-bottom:5px;">
-                <div style="display:flex; gap:5px;">
-                    <button onclick="setAnnouncement()" class="adm-btn add" style="flex:1;">POST</button>
-                    <button onclick="clearAnnouncement()" class="adm-btn wipe" style="flex:1;">CLEAR</button>
-                </div>
+            <span class="section-label">GLOBAL ANNOUNCEMENT</span>
+            <div class="time-row" style="margin-bottom:20px;">
+                <input type="text" id="announceInput" class="titan-input" placeholder="TYPE MESSAGE...">
+                <button class="adm-btn add" onclick="setAnnouncement()">SET</button>
+                <button class="adm-btn wipe" onclick="clearAnnouncement()">X</button>
             </div>
 
-            <div class="console-action-strip" style="border-left-color: var(--neon-cyan);">
-                <div class="strip-label">MANUAL OVERRIDE (MULTI-PC)</div>
-            </div>
+            <span class="section-label">PENDING REQUESTS</span>
+            <div id="adminControls" style="margin-bottom:20px;"></div>
+
+            <span class="section-label">MANUAL DEPLOYMENT</span>
             <div class="manual-form-grid">
-                <input type="text" id="manName" placeholder="PLAYER NAME" class="titan-input">
-                
-                <label style="font-size:0.6rem; color:#888; margin-top:5px;">SELECT PCS:</label>
-                <div id="adminSquadGrid" class="squad-grid" style="margin-bottom:10px;"></div>
-
+                <input type="text" id="manName" class="titan-input" placeholder="PLAYER NAME">
+                <div class="squad-grid" id="adminSquadGrid"></div>
                 <div class="time-row">
                     <input type="time" id="manStart" class="titan-input">
-                    <span style="color:#555">TO</span>
+                    <span style="color:#444">TO</span>
                     <input type="time" id="manEnd" class="titan-input">
                 </div>
-                <button onclick="adminManualBook()" class="adm-btn add full-width">DEPLOY MANUAL BOOKING</button>
+                <button class="protocol-execute-btn" onclick="adminManualBook()">FORCE DEPLOY</button>
             </div>
 
-            <div class="console-action-strip" style="margin-top:20px;">
-                <div class="strip-label">PENDING REQUESTS</div>
-            </div>
-            <div id="adminControls" class="admin-session-scroll-zone"></div>
+            <span class="section-label" style="margin-top:20px;">LIVE SESSIONS</span>
+            <div id="activeSlotsList"></div>
 
-            <div class="console-action-strip" style="margin-top:20px; border-left-color: #fff;">
-                <div class="strip-label">ACTIVE DEPLOYMENTS</div>
-            </div>
-            <div id="activeSlotsList" class="schedule-list-container" style="max-height: 200px;"></div>
-
-            <div class="console-footer-actions" style="border-top: 1px solid #333; padding-top:15px; margin-top:15px;">
-                <button id="killSwitchBtn" class="wipe-protocol-btn" onclick="toggleLockdown()" style="font-size:1rem; font-weight:900; background:rgba(255,0,0,0.2);">⚠ TOGGLE LOCKDOWN</button>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <button class="wipe-protocol-btn" onclick="clearAllData()" style="font-size:0.7rem;">WIPE DATA</button>
-                    <button class="exit-btn" onclick="closeAdmin()">CLOSE HUD</button>
-                </div>
-            </div>
+            <button class="wipe-protocol-btn" onclick="clearAllData()">WIPE ALL SYSTEM DATA</button>
+            <button class="wipe-protocol-btn" style="background:var(--neon-gold); color:#000; margin-top:10px;" onclick="toggleLockdown()">TOGGLE CAFE LOCKDOWN</button>
+            <button class="exit-btn" onclick="closeAdmin()">EXIT TERMINAL</button>
         </div>
     </div>
 
