@@ -117,7 +117,7 @@ body { background: var(--bg-black); color: #fff; font-family: var(--font-body); 
 .n-label { display: block; font-size: 0.5rem; color: #888; margin-bottom: 2px; }
 .n-val { font-family: var(--font-ui); font-size: 0.8rem; font-weight: 700; }
 
-/* --- FLOOR (NEW SPLIT CONFIG) --- */
+/* --- FLOOR (SPLIT CONFIG) --- */
 .deployment-floor { max-width: 100%; padding: 15px; margin-bottom: 100px; }
 
 /* MOBILE DEFAULT: Side-by-Side Columns */
@@ -127,6 +127,10 @@ body { background: var(--bg-black); color: #fff; font-family: var(--font-body); 
     gap: 15px;
     align-items: start;
 }
+
+/* 🔴 SWAP COLUMNS: Move 1st Section (Alpha) to Right, 2nd (Bravo) to Left */
+.split-layout-wrapper section:nth-child(1) { order: 2; } /* Alpha (1-5) moves to RIGHT */
+.split-layout-wrapper section:nth-child(2) { order: 1; } /* Bravo (10-6) moves to LEFT */
 
 /* Zone Labels on Mobile */
 .zone-descriptor {
@@ -156,6 +160,10 @@ body { background: var(--bg-black); color: #fff; font-family: var(--font-body); 
         display: block; /* Stack Zones vertically again */
     }
 
+    /* Reset the Order for Desktop so Alpha is on Top */
+    .split-layout-wrapper section:nth-child(1) { order: unset; }
+    .split-layout-wrapper section:nth-child(2) { order: unset; }
+
     .zone-descriptor {
         text-align: left; /* Reset text align */
         margin: 30px 0 15px; /* Add breathing room */
@@ -165,7 +173,6 @@ body { background: var(--bg-black); color: #fff; font-family: var(--font-body); 
         border-bottom: none;
         padding-bottom: 0;
     }
-    /* Add the decorative line back on Desktop */
     .zone-descriptor::after {
         content: '';
         flex: 1;
